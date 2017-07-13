@@ -25,20 +25,23 @@ TextView textView, textView2;
     ImageView imageView;
     Button button;
     SharedPreferences preferences;
-    public   int i = 1;
+    SharedPreferences.Editor editor;
+    int i;
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
-      final int number = 0;
-       final int theCount = 1;
       final  LinearLayout l1 = (LinearLayout)findViewById(R.id.mylinear);
 
         preferences= PreferenceManager.getDefaultSharedPreferences(MainActivity.this);
+        editor = preferences.edit();
         textView = (TextView)findViewById(R.id.textView);
         textView.setText("Smoking? You must be joking...");
         imageView = (ImageView)findViewById(R.id.imageView);
         textView2 = (TextView)findViewById(R.id.textView2);
+
+        // if counter exist put value in i , if not i=0 (the user not pressed yet on the button)
+        i = preferences.getInt("count",0);
 
 
         button = (Button)findViewById(R.id.button);
@@ -46,6 +49,9 @@ TextView textView, textView2;
         button.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+
+                // every click increase i value
+                i++;
 
                 textView2.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -79,7 +85,7 @@ TextView textView, textView2;
 
                 if(i == 1){
                 i = 2;
-                 preferences.edit().putInt("count", i);
+                 editor.putInt("count", i);
                     //Toast.makeText(MainActivity.this, "its your first. Remember: Health is wealth.", Toast.LENGTH_LONG).show();
                     Toasty.info(MainActivity.this, " its your first. Remember: Health is wealth", Toast.LENGTH_LONG,true).show();
                 }
@@ -213,8 +219,11 @@ TextView textView, textView2;
 
                     }
 
+                    // save last i value to preference
+                    editor.putInt("count",i);
+                    editor.apply();
 
-                    preferences.edit().putInt("count", i);
+
                 }
 
 // TODO : Trying to change the color slowly any press untill it will be black. on the part of the grey it will be setnences that nicer to hear, but with the increcment it will be harder.
